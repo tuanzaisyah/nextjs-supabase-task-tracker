@@ -1,4 +1,4 @@
-import AuthTabs from "@/components/AuthTabs";
+import AuthTabs from "@/components/authTabs/AuthTabs";
 
 export default function Home() {
   return (

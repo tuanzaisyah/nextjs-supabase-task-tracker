@@ -2,14 +2,27 @@ import TaskItem from "@/components/TaskItem";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { createClient } from "@/utils/supabase/server";
 import { Send } from "lucide-react";
+import { redirect } from "next/navigation";
 
 export default async function Todos() {
   const todos = ["make dinner", "wash laundry"];
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return redirect("/");
+  }
+  const name = user?.user_metadata?.name;
+
   return (
     <div className="w-screen h-[calc(100vh-57px)] flex flex-col items-center px-6">
       <h1 className="text-3xl font-semibold mb-8 mt-24">
-        Hi <span className="text-emerald-950">name, </span> your todo list
+        Hi <span className="text-emerald-950">{name}, </span> your todo list
       </h1>
       <div>
         <Card className="rounded-full">

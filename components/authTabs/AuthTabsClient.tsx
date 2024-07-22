@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,8 +11,29 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useSearchParams, useRouter } from "next/navigation";
+import { login, signup } from "./actions";
+import { useToast } from "../ui/use-toast";
+import { useEffect } from "react";
 
-export default async function AuthTabs() {
+export default function AuthTabsClient() {
+  const searchParams = useSearchParams();
+  const message = searchParams.get("message") || null;
+  const action = searchParams.get("action");
+  const { toast } = useToast();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (message && action) {
+      toast({
+        variant: action === "error" ? "destructive" : "default",
+        title: action === "error" ? "Error" : "Success",
+        description: message,
+      });
+      router.replace("/");
+    }
+  }, [message, action, toast, router]);
+
   return (
     <Tabs defaultValue="account" className="w-[400px]">
       <TabsList className="grid w-full grid-cols-2">
@@ -48,9 +70,18 @@ export default async function AuthTabs() {
                   required
                 />
               </div>
+              <div>
+                {message && (
+                  <div className="text-sm font-medium text-destructive">
+                    {message}
+                  </div>
+                )}
+              </div>
             </CardContent>
             <CardFooter>
-              <Button className="w-full">Login</Button>
+              <Button formAction={login} className="w-full">
+                Login
+              </Button>
             </CardFooter>
           </form>
         </Card>
@@ -93,9 +124,18 @@ export default async function AuthTabs() {
                   required
                 />
               </div>
+              <div>
+                {message && (
+                  <div className="text-sm font-medium text-destructive">
+                    {message}
+                  </div>
+                )}
+              </div>
             </CardContent>
             <CardFooter>
-              <Button className="w-full">Sign Up</Button>
+              <Button formAction={signup} className="w-full">
+                Sign Up
+              </Button>
             </CardFooter>
           </form>
         </Card>
