@@ -24,9 +24,6 @@ export default function ResetPassword() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    console.log("Reset Password page loaded");
-    console.log("Search params:", Object.fromEntries(searchParams.entries()));
-
     if (message && action) {
       toast({
         variant: action === "error" ? "destructive" : "default",
