@@ -59,3 +59,30 @@ export async function signOut() {
   await supabase.auth.signOut();
   redirect("/");
 }
+
+export async function resetPasswordEmail(formData: FormData) {
+  const supabase = createClient();
+
+  // type-casting here for convenience
+  // in practice, you should validate your inputs
+  const email = formData.get("email") as string;
+
+  console.log("Sending reset password email to:", email);
+  console.log(
+    "Redirect URL:",
+    `${process.env.NEXT_PUBLIC_SITE_URL}/reset-password`
+  );
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/reset-password`,
+  });
+
+  if (error) {
+    return redirect(
+      `/?message=${encodeURIComponent(error.message)}&action=error`
+    );
+  }
+  return redirect(
+    "/reset-password?message=Password reset link has been sent to your email address&action=success"
+  );
+}
